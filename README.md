@@ -38,5 +38,8 @@ Tasks:
 # References
 Martin, Jonathan E. *Mid-Latitude Atmospheric Dynamics: A First Course.* John Wiley & Sons, 2013.
 
+# Programming Tasks
+Not much left to add functionally speaking - but it probably needs some visual TLC (coordinate arrows, a grid?). I also considered having particles "streak" like on Windy, but it might be too memory intensive. I think Windy does this with "shaders" which I am not too keen on getting into. Another idea is to have a separate mode where the user can drop in a larger tracer which shows vectors representing the PGA and CA (and possibly friction!). Otherwise, there is a lot bad variable management that could be improved, but I can't be arsed.
+
 [^1]: An apparent force which does no work.
 [^2]: For this simulation, $f>0$, *i.e.* the Northern Hemisphere. 
