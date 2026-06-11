@@ -35,18 +35,18 @@ function setup() {
   pressureSelect.style('font-size', '32px');
 
   motionType = createSelect();
-  motionType.position(0, height+50);
+  motionType.position(0, height+75);
   motionType.option('Real Motion');
   motionType.option('Geostrophic Motion');
   motionType.style('font-size', '32px');
   
   resetButton = createButton('Reset Everything');
-  resetButton.position(0, height+100);
+  resetButton.position(0, height+150);
   resetButton.style('font-size', '32px');
   resetButton.mousePressed(reset);
   
   resetPointsButton = createButton('Reset Tracers');
-  resetPointsButton.position(0, height+150);
+  resetPointsButton.position(0, height+225);
   resetPointsButton.style('font-size', '32px');
   resetPointsButton.mousePressed(resetPoints);
   
