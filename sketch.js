@@ -21,9 +21,10 @@ let resetButton;
 let resetPointsButton;
 
 function setup() {
-  createCanvas(1000, 800);
+  createCanvas(900, 800);
   
   translate(0, height);
+  fac = round(width/40);
   translate(-2*fac, fac)
   scale(1, -1);
   
@@ -31,23 +32,26 @@ function setup() {
   pressureSelect.position(0, height);
   pressureSelect.option('H');
   pressureSelect.option('L');
+  pressureSelect.style('font-size', '32px');
 
   motionType = createSelect();
-  motionType.position(0, height+25);
+  motionType.position(60, height);
   motionType.option('Real Motion');
   motionType.option('Geostrophic Motion');
+  motionType.style('font-size', '32px');
   
   resetButton = createButton('Reset Everything');
-  resetButton.position(0, height+50);
+  resetButton.position(370, height);
+  resetButton.style('font-size', '32px');
   
   resetButton.mousePressed(reset);
   
   resetPointsButton = createButton('Reset Tracers');
-  resetPointsButton.position(0, height+75);
+  resetPointsButton.position(630, height);
+  resetPointsButton.style('font-size', '32px');
+  
   
   resetPointsButton.mousePressed(resetPoints);
-  
-  fac = round(width/40);
   
   // Create field
   let I = 0;
