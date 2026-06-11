@@ -16,6 +16,7 @@ let f = 1;
 let Nmax = 4000;
 
 let pressureSelect;
+let motionType;
 let resetButton;
 let resetPointsButton;
 
@@ -30,14 +31,19 @@ function setup() {
   pressureSelect.position(0, height);
   pressureSelect.option('H');
   pressureSelect.option('L');
+
+  motionType = createSelect();
+  motionType.position(0, height+25);
+  motionType.option('Real Motion');
+  motionType.option('Geostrophic Motion');
   
   resetButton = createButton('Reset Everything');
-  resetButton.position(0, height+25);
+  resetButton.position(0, height+50);
   
   resetButton.mousePressed(reset);
   
   resetPointsButton = createButton('Reset Tracers');
-  resetPointsButton.position(0, height+50);
+  resetPointsButton.position(0, height+75);
   
   resetPointsButton.mousePressed(resetPoints);
   
