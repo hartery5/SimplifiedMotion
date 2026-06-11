@@ -26,6 +26,9 @@ class parcel {
       
       let ax = -this.cor*this.vy - (1/this.rho)*dpdx;
       let ay = this.cor*this.vx - (1/this.rho)*dpdy;
+
+      this.x += this.vx*this.dt;
+      this.y += this.vy*this.dt;
       
       // Simplified Eq's of Motion
       this.vx += ax*this.dt;
@@ -34,9 +37,6 @@ class parcel {
       // Just Geostrophic Motion
       //this.vx = (1/(this.cor*this.rho))*dpdy;
       //this.vy = -(1/(this.cor*this.rho))*dpdx;
-      
-      this.x += this.vx*this.dt;
-      this.y += this.vy*this.dt;
     } else {
       this.kill = true;
     }
