@@ -31,12 +31,21 @@ class parcel {
       this.y += this.vy*this.dt;
       
       // Simplified Eq's of Motion
-      this.vx += ax*this.dt;
-      this.vy += ay*this.dt;
+      if (motionType.selected()=='Real Motion'){
+        this.x += this.vx*this.dt;
+        this.y += this.vy*this.dt;
+        this.vx += ax*this.dt;
+        this.vy += ay*this.dt;
+      }
+
+      // Geostrophic Motion
+      if (motionType.selected()=='Geostrophic Motion'){
+        this.x += this.vx*this.dt;
+        this.y += this.vy*this.dt;
+        this.vx = (1/(this.cor*this.rho))*dpdy;
+        this.vy = -(1/(this.cor*this.rho))*dpdx;
+      }
       
-      // Just Geostrophic Motion
-      //this.vx = (1/(this.cor*this.rho))*dpdy;
-      //this.vy = -(1/(this.cor*this.rho))*dpdx;
     } else {
       this.kill = true;
     }
