@@ -124,7 +124,31 @@ function mousePressed() {
       parcels[i].initialize(pressureField);
     }
   }
+}
+
+function touchStarted() {
+  let posX = round(touch.x/(width/4))*(width/4);
+  let posY = round(touch.y/(height/4))*(height/4);
   
+  if (posY<height && posY>0){
+    for (let i = 0; i<maxI; i++) {
+      for (let j = 0; j<maxJ; j++) {
+        let r = pow(pressureField[i][j].x-posX,2)+pow(pressureField[i][j].y-posY,2);
+        if (pressureSelect.selected()=='H'){
+            pressureField[i][j].V += exp(-r/20000);
+        }
+        if (pressureSelect.selected()=='L'){
+            pressureField[i][j].V -= exp(-r/20000);
+        }
+      }
+    }
+    
+    updateIsoFields(pressureField);
+    
+    for (let i=0; i<parcels.length; i++){
+      parcels[i].initialize(pressureField);
+    }
+  }
 }
 
 function reset(){
