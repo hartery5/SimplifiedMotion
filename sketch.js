@@ -1,5 +1,6 @@
 // Object Arrays
 let pressureField = [];
+let speedField = [];
 let isoFields = [];
 let parcels = [];
 let maxI, maxJ;
@@ -20,11 +21,16 @@ let motionType;
 let resetButton;
 let resetPointsButton;
 
+let frictionBox;
+let coriolisBox;
+
+let counter = 0;
+
 function setup() {
   createCanvas(900, 800);
   
   translate(0, height);
-  fac = round(width/40);
+  fac = round(width/25);
   translate(-2*fac, fac)
   scale(1, -1);
   
@@ -39,6 +45,7 @@ function setup() {
   motionType.option('Real Motion');
   motionType.option('Geostrophic Motion');
   motionType.style('font-size', '32px');
+  motionType.selected('Geostrophic Motion');
   
   resetButton = createButton('Reset Everything');
   resetButton.position(0, height+150);
@@ -49,16 +56,29 @@ function setup() {
   resetPointsButton.position(0, height+225);
   resetPointsButton.style('font-size', '32px');
   resetPointsButton.mousePressed(resetPoints);
-  
+
+  frictionBox = createCheckbox('Enable Friction',true);
+  frictionBox.position(400, height);
+  frictionBox.style('font-family', 'Verdana');
+  frictionBox.style('font-size', '32px');
+
+  coriolisBox = createCheckbox('Enable Coriolis',true);
+  coriolisBox.position(400, height+75);
+  coriolisBox.style('font-family', 'Verdana');
+  coriolisBox.style('font-size', '32px');
+
   // Create field
   let I = 0;
   let J = 0;
   for (let i = -fac; i < (width+2*fac); i += fac) {
     pressureField[I] = [];
+    speedField[I] = [];
     J = 0;
     for (let j = -fac; j < (height+2*fac); j += fac) {
       p = new scalarFieldPoint(i, j, 0);
+      s = new scalarFieldPoint(i, j, 0);
       pressureField[I][J] = p;
+      speedField[I][J] = s;
       J += 1;
     }
     I += 1;
@@ -78,11 +98,20 @@ function setup() {
 function draw() {
   background(220);
   
+  if (motionType.selected()=='Real Motion'){
+    frictionBox.show();
+    coriolisBox.show();
+  } else {
+    frictionBox.hide();
+    coriolisBox.hide();
+  }
+
+
   showIsoFields();
   
   for (let i=0; i<parcels.length; i++){
     if (parcels[i].move){
-      parcels[i].physics(pressureField);
+      parcels[i].physics(pressureField,speedField);
     }
     parcels[i].show();
   }
@@ -97,16 +126,23 @@ function draw() {
   
   for (let i=N; i<Nmax; i++){
     p = new parcel(random(0,width),random(0,height));
-    p.initialize(pressureField);
+    p.initialize(pressureField,speedField);
     parcels[i] = p;
   }
+
+  counter +=1;
+
+  //if (counter % 120 == 0){
+  //  updateIsoFields(pressureField);
+  //}
+
 }
 
 function mousePressed() {
-  let posX = round(mouseX/(width/4))*(width/4);
-  let posY = round(mouseY/(height/4))*(height/4);
+  let posX = round(mouseX/(width/5))*(width/5);
+  let posY = round(mouseY/(height/5))*(height/5);
   
-  if (posY<height && posY>0){
+  if (posX>0 && posX<width &&posY<height && posY>0){
     for (let i = 0; i<maxI; i++) {
       for (let j = 0; j<maxJ; j++) {
         let r = pow(pressureField[i][j].x-posX,2)+pow(pressureField[i][j].y-posY,2);
@@ -122,16 +158,17 @@ function mousePressed() {
     updateIsoFields(pressureField);
     
     for (let i=0; i<parcels.length; i++){
-      parcels[i].initialize(pressureField);
+      parcels[i].initialize(pressureField,speedField);
     }
   }
+  
 }
 
 function touchStarted() {
-  let posX = round(touch.x/(width/4))*(width/4);
-  let posY = round(touch.y/(height/4))*(height/4);
+  let posX = round(touch.x/(width/5))*(width/5);
+  let posY = round(touch.y/(height/5))*(height/5);
   
-  if (posY<height && posY>0){
+  if (posX>0 && posX<width && posY<height && posY>0){
     for (let i = 0; i<maxI; i++) {
       for (let j = 0; j<maxJ; j++) {
         let r = pow(pressureField[i][j].x-posX,2)+pow(pressureField[i][j].y-posY,2);
@@ -147,7 +184,7 @@ function touchStarted() {
     updateIsoFields(pressureField);
     
     for (let i=0; i<parcels.length; i++){
-      parcels[i].initialize(pressureField);
+      parcels[i].initialize(pressureField,speedField);
     }
   }
 }
@@ -156,6 +193,7 @@ function reset(){
   for (let i =0; i<maxI; i++) {
     for (let j=0; j<maxJ; j++) {
       pressureField[i][j].V = 0;
+      speedField[i][j].V = 0;
     }
   }
   
@@ -172,7 +210,7 @@ function resetPoints(){
   parcels = [];
   for (let i=0; i<Nmax; i+=1){
     p = new parcel(random(0,width),random(0,height));
-    p.initialize(pressureField);
+    p.initialize(pressureField,speedField);
     parcels[i] = p;
   }
 }
@@ -181,7 +219,6 @@ function showIsoFields(){
   for (let k=0; k<isoFields.length; k++) {
     for (let i=0; i<isoFields[0].length; i++){
       for (let j=0; j<isoFields[0][0].length; j++){
-        //print(isoFields[k][i][j])
         isoFields[k][i][j].show()
       }
     }
@@ -204,6 +241,8 @@ function updateIsoFields(scalarField){
 
   isolines = [];
   isoscale = 0.25;
+
+  // isoscale = (isomax-isomin)/5;
   
   if (isoscale==0.0){
     isomin = -1;
